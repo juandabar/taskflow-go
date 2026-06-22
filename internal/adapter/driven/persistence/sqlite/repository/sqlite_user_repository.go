@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/juandabar/taskflow-go/internal/domain/apperror"
 	"github.com/juandabar/taskflow-go/internal/domain/entity"
@@ -74,10 +75,11 @@ func scanUser(scanner interface {
 }) (*entity.User, error) {
 	var user entity.User
 	var role string
+	var createdAt string
 
 	err := scanner.Scan(
 		&user.ID, &user.Name, &user.Email,
-		&user.PasswordHash, &role, &user.CreatedAt,
+		&user.PasswordHash, &role, &createdAt,
 	)
 	if err == sql.ErrNoRows {
 		return nil, apperror.NewNotFoundError("user", "")
@@ -87,5 +89,10 @@ func scanUser(scanner interface {
 	}
 
 	user.Role = valueobject.UserRole(role)
+	user.CreatedAt, err = time.Parse("2006-01-02 15:04:05.999999999 +0000 UTC", createdAt)
+	if err != nil {
+		return nil, fmt.Errorf("parsing created_at: %w", err)
+	}
+
 	return &user, nil
 }
