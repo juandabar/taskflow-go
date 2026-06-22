@@ -24,7 +24,7 @@ func main() {
 
 	c := container.NewContainer(db, cfg.JWTSecret)
 
-	router := httpAdapter.NewRouter(c.AuthHandler)
+	router := httpAdapter.NewRouter(c.AuthHandler, c.UserHandler, cfg.JWTSecret)
 
 	log.Printf("server runing on port %s", cfg.Port)
 	if err := http.ListenAndServe(":"+cfg.Port, router); err != nil {

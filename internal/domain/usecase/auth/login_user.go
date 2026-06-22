@@ -43,7 +43,7 @@ func (uc *LoginUserUseCase) Execute(ctx context.Context, input LoginUserInput) (
 		return nil, apperror.NewValidationError("invalid credentials")
 	}
 
-	token, err := generateToken(user.ID, uc.jwtSecret)
+	token, err := generateToken(user.ID, string(user.Role), uc.jwtSecret)
 	if err != nil {
 		return nil, fmt.Errorf("generating token: %w", err)
 	}
@@ -51,10 +51,11 @@ func (uc *LoginUserUseCase) Execute(ctx context.Context, input LoginUserInput) (
 	return &LoginUserOutput{User: *user, Token: token}, nil
 }
 
-func generateToken(userID, secret string) (string, error) {
+func generateToken(userID, role, secret string) (string, error) {
 	claims := jwt.MapClaims{
-		"sub": userID,
-		"exp": time.Now().Add(24 * time.Hour).Unix(),
+		"sub":  userID,
+		"role": role,
+		"exp":  time.Now().Add(24 * time.Hour).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secret))
