@@ -1,23 +1,33 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net/http"
+
+	httpAdapter "github.com/juandabar/taskflow-go/internal/adapter/driving/http"
+	"github.com/juandabar/taskflow-go/internal/infrastructure/config"
+	"github.com/juandabar/taskflow-go/internal/infrastructure/container"
+	"github.com/juandabar/taskflow-go/internal/infrastructure/database"
 )
 
 func main() {
-	names := []string{"Juan", "Maria", "Pedro"}
-	names = append(names, "Ana")
-
-	for _, name := range names {
-		fmt.Println(name)
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	ages := map[string]int{
-		"Juan": 28,
-		"Ana":  25,
+	db, err := database.NewSQLiteConnection(cfg.DatabasePath)
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer db.Close()
 
-	ages["Maria"] = 26
+	c := container.NewContainer(db, cfg.JWTSecret)
 
-	fmt.Println(ages)
+	router := httpAdapter.NewRouter(c.AuthHandler)
+
+	log.Printf("server runing on port %s", cfg.Port)
+	if err := http.ListenAndServe(":"+cfg.Port, router); err != nil {
+		log.Fatal(err)
+	}
 }
