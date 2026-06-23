@@ -10,3 +10,7 @@ const (
 func (r UserRole) IsValid() bool {
 	return r == RoleAdmin || r == RoleMember
 }
+
+func (r UserRole) IsAdmin() bool {
+	return r == RoleAdmin
+}

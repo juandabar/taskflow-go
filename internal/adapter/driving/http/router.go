@@ -13,6 +13,7 @@ func NewRouter(authHandler *handler.AuthHandler, userHandler *handler.UserHandle
 	mux.HandleFunc("POST /auth/register", authHandler.Register)
 	mux.HandleFunc("POST /auth/login", authHandler.Login)
 
+	mux.Handle("GET /users", middleware.AuthGuard(jwtSecret)(http.HandlerFunc(userHandler.GetUsers)))
 	mux.Handle("GET /users/{id}", middleware.AuthGuard(jwtSecret)(http.HandlerFunc(userHandler.GetUserById)))
 
 	return mux

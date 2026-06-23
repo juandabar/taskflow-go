@@ -35,6 +35,14 @@ func (e *ForbiddenError) Error() string {
 	return e.Message
 }
 
+type UnauthorizedError struct {
+	Message string
+}
+
+func (e *UnauthorizedError) Error() string {
+	return e.Message
+}
+
 func NewNotFoundError(resource, id string) *NotFoundError {
 	return &NotFoundError{Resource: resource, ID: id}
 }
@@ -49,4 +57,8 @@ func NewConflictError(message string) *ConflictError {
 
 func NewForbiddenError(message string) *ForbiddenError {
 	return &ForbiddenError{Message: message}
+}
+
+func NewUnauthorizedError(message string) *UnauthorizedError {
+	return &UnauthorizedError{Message: message}
 }

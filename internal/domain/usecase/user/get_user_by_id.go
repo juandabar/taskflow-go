@@ -9,14 +9,14 @@ import (
 )
 
 type GetUserByIdUseCase struct {
-	userRepo userRepository
+	userRepo userFinder
 }
 
 type GetUserOutput struct {
 	User entity.User
 }
 
-func NewGetUserByIdUseCase(userRepo userRepository) *GetUserByIdUseCase {
+func NewGetUserByIdUseCase(userRepo userFinder) *GetUserByIdUseCase {
 	return &GetUserByIdUseCase{userRepo: userRepo}
 }
 
