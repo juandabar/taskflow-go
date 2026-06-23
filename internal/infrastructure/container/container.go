@@ -17,14 +17,19 @@ type Container struct {
 func NewContainer(db *sql.DB, jwtSecret string) *Container {
 	userRepo := sqliteRepo.NewSQLiteUserRepository(db)
 
+	// ----/auth
 	registerUseCase := auth.NewRegisterUserUseCase(userRepo)
 	loginUseCase := auth.NewLoginUserUseCase(userRepo, jwtSecret)
 
 	authHandler := handler.NewAuthHandler(registerUseCase, loginUseCase)
+	// ----------------------------------------------------------------
 
+	// ----/users
 	getUserByIdUseCase := user.NewGetUserByIdUseCase(userRepo)
+	getUsersUseCase := user.NewGetUsersUseCase(userRepo)
 
-	userHandler := handler.NewUserHandler(getUserByIdUseCase)
+	userHandler := handler.NewUserHandler(getUserByIdUseCase, getUsersUseCase)
+	// ----------------------------------------------------------------
 
 	return &Container{
 		AuthHandler: authHandler,

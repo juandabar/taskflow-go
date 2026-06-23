@@ -47,6 +47,13 @@ func WriteError(w http.ResponseWriter, err error) {
 			Status: http.StatusForbidden,
 			Detail: e.Error(),
 		}
+	case *apperror.UnauthorizedError:
+		pd = problemDetail{
+			Type:   "https://taskflow.api/errors/un-authorized",
+			Title:  "Unauthorized",
+			Status: http.StatusUnauthorized,
+			Detail: e.Error(),
+		}
 	default:
 		log.Printf("internal error: %v", err)
 		pd = problemDetail{
