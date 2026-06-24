@@ -8,7 +8,6 @@ import (
 
 	"github.com/juandabar/taskflow-go/internal/domain/apperror"
 	"github.com/juandabar/taskflow-go/internal/domain/entity"
-	"github.com/juandabar/taskflow-go/internal/domain/port/repository"
 	"github.com/juandabar/taskflow-go/internal/domain/valueobject"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -24,10 +23,10 @@ type RegisterUserOutput struct {
 }
 
 type RegisterUserUseCase struct {
-	userRepo repository.UserRepository
+	userRepo userRepository
 }
 
-func NewRegisterUserUseCase(userRepo repository.UserRepository) *RegisterUserUseCase {
+func NewRegisterUserUseCase(userRepo userRepository) *RegisterUserUseCase {
 	return &RegisterUserUseCase{userRepo: userRepo}
 }
 
